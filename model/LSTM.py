@@ -2,11 +2,10 @@
 # encoding: utf-8
 from torch import nn
 import torch
-import torch.nn.functional as F
 
 
 class LSTM(nn.Module):
-    def __init__(self, input_dim, embedding_dim, hidden_dim, output_dim, batch_size=1):
+    def __init__(self, input_dim, embedding_dim, hidden_dim, output_dim, batch_size):
         super(LSTM, self).__init__()
         self.batch_size = batch_size
         self.hidden_dim = hidden_dim
