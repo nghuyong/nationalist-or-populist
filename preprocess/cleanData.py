@@ -3,26 +3,44 @@
 import re
 import jieba
 
+url_re = re.compile(r'h?ttp[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+white_blank_re = re.compile(r'\s+')
+special_character_re = re.compile(r'】|【|\[|\]|\/|『 |』')
+number_re = re.compile(r'\d+')
+
+
+def clean_weibo_text(weibo_text):
+    weibo_text = re.sub(url_re, '', weibo_text)  # 删除URL
+    weibo_text = re.sub(white_blank_re, '', weibo_text)  # 删除多余空格
+    weibo_text = re.sub(special_character_re, '', weibo_text)  # 删除特殊的符号
+    weibo_text = re.sub(number_re, 'NUMBER', weibo_text)  # 数字统一转换为 NUM
+    return " ".join(jieba.cut(weibo_text)) + '\n'
+
 
 def clean(source_file, target_file):
-    train_f = open(source_file, 'r', encoding='utf-8')
-    sentences = train_f.readlines()
+    source_f = open(source_file, 'r', encoding='utf-8')
+    sentences = source_f.readlines()
 
-    train_clean_f = open(target_file, 'w', encoding='utf-8')
+    clean_f = open(target_file, 'w', encoding='utf-8')
     jieba.suggest_freq('NUMBER')
-    for line in sentences:
-        line = line.strip()
-        label = line[0]
-        train_clean_f.write('{},'.format(label))
-        line = line[1:]
-        line = re.sub(r'h?ttp[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '',
-                      line)  # 删除URL
-        line = re.sub(r'\s+', '', line)  # 删除多余空格
-        line = re.sub(r'】|【|\[|\]|\/|『 |』', '', line)  # 删除特殊的符号
-        line = re.sub(r'\d+', 'NUMBER', line)  # 数字统一转换为 NUM
-        train_clean_f.write(" ".join(jieba.cut(line)) + '\n')
+    if 'test' in source_file:
+        for line in sentences:
+            line = line.strip()
+            if not line:
+                continue
+            weibo_id, weibo_text = line.split(',', 1)
+            clean_f.write('{},'.format(weibo_id))
+            clean_f.write(clean_weibo_text(weibo_text))
+    else:
+        for line in sentences:
+            line = line.strip()
+            label = line[0]
+            clean_f.write('{},'.format(label))
+            weibo_text = line[1:]
+            clean_f.write(clean_weibo_text(weibo_text))
 
 
 if __name__ == "__main__":
-    clean('../data/nationalism/dev.txt', '../data/nationalism/dev_clean.csv')
-    clean('../data/nationalism/train.txt', '../data/nationalism/train_clean.csv')
+    # clean('../data/nationalism/dev.txt', '../data/nationalism/dev_clean.csv')
+    # clean('../data/nationalism/train.txt', '../data/nationalism/train_clean.csv')
+    clean('../data/nationalism/test.csv', '../data/nationalism/test_clean.csv')
