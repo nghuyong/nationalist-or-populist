@@ -56,7 +56,7 @@ def train(model, iterator, optimizer, criterion):
                 print('save model', flush=True)
             print(
                 """
-                \nbatch: {}
+                batch {}
                 train acc {:.4f} precision {:.4f} recall {:.4f} f {:.4f} loss {:.4f}
                   dev acc {:.4f} precision {:.4f} recall {:.4f} f {:.4f} loss {:.4f}
                 """.format(batch_index + 1, train_acc, train_precision, train_recall, train_f_value, loss.item(),
