@@ -15,13 +15,21 @@ max_acc = 0.0
 
 def binary_accuracy(preds, y):
     """
-    Returns accuracy per batch, i.e. if you get 8/10 right, this returns 0.8, NOT 8
+    计算统计参数，正确率,精确率,召回率,f值
     """
     # round predictions to the closest integer
     rounded_preds = torch.round(torch.sigmoid(preds))
+
+    true_positive = (rounded_preds * y).sum(dim=0)
+
+    precision = true_positive.div(rounded_preds.sum(dim=0).add(1e-9))
+    recall = true_positive.div(y.sum(dim=0).add(1e-9))
+
+    f_value = 1.0 / (1.0 / precision + 1.0 / recall)
+
     correct = (rounded_preds == y).float()  # convert into float for division
     acc = correct.sum() / len(correct)
-    return acc
+    return acc.item(), precision.item(), recall.item(), f_value.item()
 
 
 def train(model, iterator, optimizer, criterion):
@@ -35,25 +43,33 @@ def train(model, iterator, optimizer, criterion):
 
         loss = criterion(predictions, batch.label)
 
-        acc = binary_accuracy(predictions, batch.label)
-
         loss.backward(retain_graph=True)
 
         optimizer.step()
 
         if (batch_index + 1) % 100 == 0:
-            dev_acc, dev_loss = evaluate(model, valid_iterator, criterion)
+            train_acc, train_precision, train_recall, train_f_value = binary_accuracy(predictions, batch.label)
+            dev_acc, dev_precision, dev_recall, dev_f_value, dev_loss = evaluate(model, valid_iterator, criterion)
             if dev_acc > max_acc:
                 max_acc = dev_acc
                 torch.save(model, 'best_model.pkl')
                 print('save model', flush=True)
-            print('current batch {} ,train_acc {:.4f} train_loss {:.4f} dev_acc {:.4f} dev_loss {:.4f}'
-                  .format(batch_index + 1, acc.item(), loss.item(), dev_acc, dev_loss), flush=True)
+            print(
+                """
+                \nbatch: {}
+                train acc {:.4f} precision {:.4f} recall {:.4f} f {:.4f} loss {:.4f}
+                  dev acc {:.4f} precision {:.4f} recall {:.4f} f {:.4f} loss {:.4f}
+                """.format(batch_index + 1, train_acc, train_precision, train_recall, train_f_value, loss.item(),
+                           dev_acc, dev_precision, dev_recall, dev_f_value, dev_loss), flush=True
+            )
 
 
 def evaluate(model, iterator, criterion):
     epoch_loss = 0
     epoch_acc = 0
+    epoch_precision = 0
+    epoch_recall = 0
+    epoch_f_value = 0
     model.eval()
     all_batch_count = 0
     with torch.no_grad():
@@ -63,11 +79,15 @@ def evaluate(model, iterator, criterion):
                 break
             predictions = model(batch.text.cuda()).squeeze(1)
             loss = criterion(predictions, batch.label)
-            acc = binary_accuracy(predictions, batch.label)
-            epoch_loss += loss.item()
-            epoch_acc += acc.item()
+            acc, precision, recall, f_value = binary_accuracy(predictions, batch.label)
+            epoch_loss += loss
+            epoch_acc += acc
+            epoch_precision += precision
+            epoch_recall += recall
+            epoch_f_value += f_value
     model.train()
-    return epoch_acc / all_batch_count, epoch_loss / all_batch_count
+    return (epoch_acc / all_batch_count, epoch_precision / all_batch_count, epoch_recall / all_batch_count,
+            epoch_f_value / all_batch_count, epoch_loss / all_batch_count)
 
 
 def test(model, iterator):
