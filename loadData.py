@@ -10,7 +10,7 @@ from config import VOCABULARY_SIZE, BATCH_SIZE
 导入数据
 """
 TEXT = data.Field()
-WEIBO_ID = data.Field()
+WEIBO_ID = data.Field(sequential=False, use_vocab=False)
 LABEL = data.LabelField(tensor_type=torch.FloatTensor)
 
 train, val = data.TabularDataset.splits(
@@ -18,8 +18,8 @@ train, val = data.TabularDataset.splits(
     validation='dev_clean.csv', format='csv',
     fields=[('label', LABEL), ('text', TEXT)])
 
-test = data.TabularDataset.splits(
-    path='./data/nationalism/', test='test.csv',
+test = data.TabularDataset(
+    path='./data/nationalism/test_clean.csv',
     format='csv',
     fields=[('weibo_id', WEIBO_ID), ('text', TEXT)]
 )
@@ -27,15 +27,10 @@ test = data.TabularDataset.splits(
 TEXT.build_vocab(train, max_size=VOCABULARY_SIZE)
 LABEL.build_vocab(train)
 
-train_iterator, valid_iterator = data.BucketIterator.splits(
-    (train, val),
+train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
+    (train, val, test),
     batch_size=BATCH_SIZE,
     sort_key=lambda x: len(x.text),
     repeat=True)
-
-test_iterator = data.BucketIterator(test,
-                                    batch_size=BATCH_SIZE,
-                                    sort_key=lambda x: len(x.text),
-                                    repeat=False)
 
 print('finish load data')
