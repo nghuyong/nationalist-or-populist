@@ -2,7 +2,6 @@
 # encoding: utf-8
 from torchtext import data
 import torch
-import pickle
 
 from config import VOCABULARY_SIZE, BATCH_SIZE, CURRENT_MODEL_NAME
 
