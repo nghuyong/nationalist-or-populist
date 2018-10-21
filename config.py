@@ -7,4 +7,4 @@ EMBEDDING_DIM = 100
 HIDDEN_DIM = 256
 OUTPUT_DIM = 1
 LEARNING_RATE = 1e-2
-CURRENT_MODEL_NAME = 'populism'  # or nationalism
+CURRENT_MODEL_NAME = 'nationalism'  # or nationalism

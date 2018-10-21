@@ -120,7 +120,7 @@ def test(model, iterator):
 
 
 if __name__ == "__main__":
-    is_traning = True
+    is_traning = False
     if is_traning:
         model = LSTM(INPUT_DIM, EMBEDDING_DIM, HIDDEN_DIM, OUTPUT_DIM, BATCH_SIZE)
     else:
