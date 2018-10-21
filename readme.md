@@ -1,3 +1,41 @@
+# 项目目录
+```
+.
+├── config.py # 配置目录
+├── data
+│   ├── cleanData.py # 清洗数据脚本
+│   ├── nationalism # 民族主义数据
+│   │   ├── dev_clean.csv
+│   │   ├── dev.txt
+│   │   ├── test_clean.csv
+│   │   ├── test.csv
+│   │   ├── train_clean.csv
+│   │   └── train.txt
+│   ├── populism # 民粹主义数据
+│   │   ├── dev_clean.csv
+│   │   ├── dev.txt
+│   │   ├── test_clean.csv
+│   │   ├── test.csv
+│   │   ├── train_clean.csv
+│   │   └── train.txt
+│   └── sourceData
+│       ├── test.xlsx
+├── loadData.py # 加载数据脚本
+├── main.py # 主程序
+├── model # 模型
+│   ├── __init__.py
+│   ├── LSTM.py # LSTM模型
+│   └── RNN.py # RNN模型
+├── predictionResults # 预测的结果文件
+│   ├── nationalism_prediction_result.xlsx 
+│   └── populism_prediction_result.xlsx
+├── readme.md 
+├── screenshot
+│   └── model.png
+└── trainedModel # 训练好的模型
+    ├── best_nationalism_model.pkl
+    └── best_populism_model.pkl
+```
 # 任务说明
 训练两个分类器，分别识别句子内容中是否包含民族主义或者是民粹主义。
 
