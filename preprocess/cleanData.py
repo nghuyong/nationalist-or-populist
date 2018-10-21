@@ -45,6 +45,6 @@ def clean(source_file, target_file):
 
 
 if __name__ == "__main__":
-    # clean('../data/nationalism/dev.txt', '../data/nationalism/dev_clean.csv')
-    # clean('../data/nationalism/train.txt', '../data/nationalism/train_clean.csv')
-    clean('../data/nationalism/test.csv', '../data/nationalism/test_clean.csv')
+    clean('../data/populism/dev.txt', '../data/populism/dev_clean.csv')
+    clean('../data/populism/train.txt', '../data/populism/train_clean.csv')
+    clean('../data/populism/test.csv', '../data/populism/test_clean.csv')

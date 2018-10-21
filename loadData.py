@@ -4,7 +4,7 @@ from torchtext import data
 import torch
 import pickle
 
-from config import VOCABULARY_SIZE, BATCH_SIZE
+from config import VOCABULARY_SIZE, BATCH_SIZE, CURRENT_MODEL_NAME
 
 """
 导入数据
@@ -14,12 +14,12 @@ WEIBO_ID = data.Field(sequential=False, use_vocab=False)
 LABEL = data.LabelField(tensor_type=torch.FloatTensor)
 
 train, val = data.TabularDataset.splits(
-    path='./data/nationalism/', train='train_clean.csv',
+    path='./data/{}/'.format(CURRENT_MODEL_NAME), train='train_clean.csv',
     validation='dev_clean.csv', format='csv',
     fields=[('label', LABEL), ('text', TEXT)])
 
 test = data.TabularDataset(
-    path='./data/nationalism/test_clean.csv',
+    path='./data/{}/test_clean.csv'.format(CURRENT_MODEL_NAME),
     format='csv',
     fields=[('weibo_id', WEIBO_ID), ('text', TEXT)]
 )

@@ -5,7 +5,7 @@ from tqdm import tqdm
 import torch
 import torch.optim as optim
 import torch.nn as nn
-from config import INPUT_DIM, HIDDEN_DIM, EMBEDDING_DIM, OUTPUT_DIM, BATCH_SIZE, LEARNING_RATE
+from config import INPUT_DIM, HIDDEN_DIM, EMBEDDING_DIM, OUTPUT_DIM, BATCH_SIZE, LEARNING_RATE, CURRENT_MODEL_NAME
 from loadData import train_iterator, valid_iterator, test_iterator
 from model.LSTM import LSTM
 import pandas as pd
@@ -52,7 +52,7 @@ def train(model, iterator, optimizer, criterion):
             dev_acc, dev_precision, dev_recall, dev_f_value, dev_loss = evaluate(model, valid_iterator, criterion)
             if dev_acc > max_acc:
                 max_acc = dev_acc
-                torch.save(model, 'best_model.pkl')
+                torch.save(model, './trainedModel/best_{}_model.pkl'.format(CURRENT_MODEL_NAME))
                 print('save model', flush=True)
             print(
                 """
@@ -110,13 +110,13 @@ def test(model, iterator):
         print(
             f'positive num {one_count} rate {one_count * 1.0 / (one_count + zero_count):.3f} negative num {zero_count} rate {zero_count * 1.0 / (one_count + zero_count):.3f}')
     print('start to generate result excel')
-    df = pd.read_excel('test_raw.xlsx')
+    df = pd.read_excel('./data/sourceData/test.xlsx')
     new_df = df[['_id', '_id_x', '_id_y', 'nick_name', 'content']]
     nationalism_predictions = []
     for index, each in tqdm(new_df.iterrows()):
         nationalism_predictions.append(weibo_id_prediction_dic.get(int(each["_id"]), ""))
-    new_df['nationalism_prediction'] = nationalism_predictions
-    new_df.to_excel('nationalism_prediction_result.xlsx')
+    new_df['{}_prediction'.format(CURRENT_MODEL_NAME)] = nationalism_predictions
+    new_df.to_excel('./predictionResults/{}_prediction_result.xlsx'.format(CURRENT_MODEL_NAME))
 
 
 if __name__ == "__main__":
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     if is_traning:
         model = LSTM(INPUT_DIM, EMBEDDING_DIM, HIDDEN_DIM, OUTPUT_DIM, BATCH_SIZE)
     else:
-        model = torch.load('best_model.pkl')
+        model = torch.load('./trainedModel/best_{}_model.pkl'.format(CURRENT_MODEL_NAME))
         print('load model successfully')
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     criterion = nn.BCEWithLogitsLoss()
