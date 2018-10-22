@@ -49,7 +49,9 @@ Train two classifiers to identify whether the sentence content contains national
 # DataSet
 
 We captured the microblog data of the GM topic and manually labeled the data with nationalist sentiment or populism and these data are used as positive samples.
-At the same time, we captured the microblog data of the media. These data are relatively objective and do not include the above two types. mood. So these data are used as negative samples.
+
+At the same time, we captured the microblog data of the media. 
+These data are relatively objective and do not include the above two types mood. So these data are used as negative samples.
 ## Data Sample
 
 Taking the nationalist data set as an example, the training set/verification set data format is as follows:
@@ -64,7 +66,9 @@ Translated into English above is:
 So the first digit is the label, 1 indicates nationalist sentiment, 0 means no, followed by text content and there is no correct label in the test set.
 
 ## DataSet Size
-We divided the data set into training and verification sets according to 8:2.and the test data of the two classifiers is the same
+We divided the data set into training and verification sets according to 8:2.
+
+Test data of the two classifiers is the same.
 
 ### Nationalism
 
