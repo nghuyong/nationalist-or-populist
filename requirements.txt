@@ -1,0 +1,4 @@
+tqdm==4.19.5
+torchtext==0.2.3
+pandas==0.23.3
+jieba==0.39
