@@ -1,17 +1,26 @@
-# 项目目录
+# Task description
+Train two classifiers to identify whether the sentence content contains nationalism or populism.
+
+# Use
+1. Clone this project 
+2. Installation dependencies, pytorch needs to be installed correctly, and the program is running on the GPU.
+3. Modify the configuration file, train or test the model. `python main.py`
+
+
+# Project Structure
 ```
 .
-├── config.py # 配置目录
+├── config.py # config file
 ├── data
-│   ├── cleanData.py # 清洗数据脚本
-│   ├── nationalism # 民族主义数据
+│   ├── cleanData.py # data clean script
+│   ├── nationalism # nationalism dataset 
 │   │   ├── dev_clean.csv
 │   │   ├── dev.txt
 │   │   ├── test_clean.csv
 │   │   ├── test.csv
 │   │   ├── train_clean.csv
 │   │   └── train.txt
-│   ├── populism # 民粹主义数据
+│   ├── populism # populism dataset 
 │   │   ├── dev_clean.csv
 │   │   ├── dev.txt
 │   │   ├── test_clean.csv
@@ -20,100 +29,105 @@
 │   │   └── train.txt
 │   └── sourceData
 │       ├── test.xlsx
-├── loadData.py # 加载数据脚本
-├── main.py # 主程序
-├── model # 模型
+├── loadData.py # load data script
+├── main.py # program entry
+├── model # model 
 │   ├── __init__.py
-│   ├── LSTM.py # LSTM模型
-│   └── RNN.py # RNN模型
-├── predictionResults # 预测的结果文件
+│   ├── LSTM.py # LSTM model
+│   └── RNN.py # RNN model
+├── predictionResults # result of prediction
 │   ├── nationalism_prediction_result.xlsx 
 │   └── populism_prediction_result.xlsx
 ├── readme.md 
 ├── screenshot
 │   └── model.png
-└── trainedModel # 训练好的模型
+└── trainedModel # has trained best model
     ├── best_nationalism_model.pkl
     └── best_populism_model.pkl
 ```
-# 任务说明
-训练两个分类器，分别识别句子内容中是否包含民族主义或者是民粹主义。
 
-# 数据说明
-`data/nationalism`目录下是民族主义的数据
+# DataSet
 
-`dev.txt`表示开发集数据，`trian.txt`表示训练集数据，`test.csv`表示测试集数据
+We captured the microblog data of the GM topic and manually labeled the data with nationalist sentiment or populism and these data are used as positive samples.
+At the same time, we captured the microblog data of the media. These data are relatively objective and do not include the above two types. mood. So these data are used as negative samples.
+## Data Sample
 
-其中，开发集和测试集数据，格式是 标签+文本(标签为1，表示正样本，具有民族主义情绪)
+Taking the nationalist data set as an example, the training set/verification set data format is as follows:
 
-测试集数据，格式是 文本id+文本
+`1#跟着感觉走#“这小子就是个汉奸买办，他在一直在华夏鼓吹转基因食品是无害的，也没见他吃过一次！” 秒拍视频 `
 
-`data/populism`目录下是民粹主义的数据，数据格式与上面的民族主义一致
+Translated into English above is:
 
-## 数据集大小
+`"1#Follow the feeling#This kid is a traitor comprador. He has been ignoring genetically modified food in China, and he has never seen him eat it once!"
+`
 
-民族主义
+So the first digit is the label, 1 indicates nationalist sentiment, 0 means no, followed by text content and there is no correct label in the test set.
 
-| 数据集 | 正样本 | 负样本 | 总量|
+## DataSet Size
+We divided the data set into training and verification sets according to 8:2.and the test data of the two classifiers is the same
+
+### Nationalism
+
+| DataSet | Positive | Negative | Total|
 | :------:| :------:  | :------:  |:---:|
-|trian|30458|31940|62398|
-| dev |7541|8059|15600|
-|test| -| -|19471|
+|Train|30458|31940|62398|
+| Validation |7541|8059|15600|
+|Test| -| -|19458|
 
-民粹主义
+### Populism
 
-| 数据集 | 正样本 | 负样本 | 总量|
+| DataSet | Positive | Negative | Total|
 | :------:| :------:  | :------:  |:---:|
-|trian|26457|31942|58399|
-| dev |6543|8057|14600|
-|test| -| -|19471|
+|Train|26457|31942|58399|
+| Validation |6543|8057|14600|
+|Test| -| -|19458|
 
 
-# 模型说明
-下面以民族主义为例子
+# Model
+Take nationalism as an example.
 
 ![](./screenshot/model.png)
 
-首先对输入的句子结巴分词，然后将分词后的每个单词转换成词向量
-输入到LSTM循环神经网络中，取网络的最后一个隐藏层节点，
-这个节点就可以看成是整个句子的一个深层次的表示，将这个表示送入一个
-全联接的单层神经网络中，并经过sigmoid函数，就能获得p，这个p就是这个句子
-是民族主义的概率
+1. Word segmentation of the input sentence
+2. Convert each word after the word segmentation into a word vector
+3. Enter the sentence into the LSTM loop neural network to obtain the last hidden layer node of the network. This node can be regarded as a deep representation of the entire sentence.
+4. Send this representation into a fully-joined single-layer neural network and pass the sigmoid function to obtain p. This p is the probability that this sentence is nationalistic.
 
 
-# 实验
-模型的超参数
+# Experiments
 
-| 字典大小 | batch大小 |词向量维度|LSTM隐藏层大小|学习率|优化算法|
+Model hyper-parameter:
+
+| Vocabulary Size | Batch Size |Word embedding|LSTM Hidden|Learning rate|Optimization|
 | :---: | :---: |:---:|:---:| :---:|:---:| 
 |10000| 32|100|256|0.01|Adam|
 
+We train and test the model using the Pytorch framework. 
+Specifically, the model is trained on the training set, and the accuracy of the current classifier is verified on the validation set every 100 batches. 
+Save the model parameters with the highest accuracy on the validation set and use this model to make predictions on the test set.
 
-实验在训练数据集上训练数据，每隔100个batch，在验证集上验证当前分类器的准确率。
+## Result
 
-保存在验证集上最高准确率的模型参数，并用这个模型在测试集上做预测。
+- nationalism
 
-## 实验结果
-
-- 民族主义
-
-| 训练集 | 准确率 | 精确率| 召回率| F值|
+| DataSet | Accuracy | Precision| Recall| F-value|
 | :---: | :---: |:---:|:---:| :---:|
-| 训练集 | 0.9375 |0.9444|0.9444|0.4722|
-| 开发集 | 0.9242 |0.8592|0.9453|0.4467|
+| Train | 0.9375 |0.9444|0.9444|0.4722|
+| Validation | 0.9242 |0.8592|0.9453|0.4467|
 
 
-- 民粹主义
+- populism
 
-| 训练集 | 准确率 | 精确率| 召回率| F值|
+| DataSet | Accuracy | Precision| Recall| F-value|
 | :---: | :---: |:---:|:---:| :---:|
-| 训练集 | 0.9062 |0.9286|0.8667|0.4483|
-| 开发集 | 0.8521 |0.7579|0.7951|0.3808|
+| Train | 0.9062 |0.9286|0.8667|0.4483|
+| Validation | 0.8521 |0.7579|0.7951|0.3808|
 
 
 
-# 引用
-如果本数据集和代码应用到了你工作中，请引用下面这篇文章:
+# Cite
 
-《民族主义和民粹主义极端情绪的表达：基于新浪微博上转基因议题的研究》
+If this dataset and code is applied to your work, please quote the following article:
+
+**《The Expression of Nationalist and Populist Emotions: A Study Based on the GMO Issues on Sina Weibo》**
 

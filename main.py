@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
-from pprint import pprint
 from tqdm import tqdm
 import torch
 import torch.optim as optim
 import torch.nn as nn
-from config import INPUT_DIM, HIDDEN_DIM, EMBEDDING_DIM, OUTPUT_DIM, BATCH_SIZE, LEARNING_RATE, CURRENT_MODEL_NAME
+from config import INPUT_DIM, HIDDEN_DIM, EMBEDDING_DIM, OUTPUT_DIM, BATCH_SIZE, LEARNING_RATE, CURRENT_MODEL_NAME, \
+    IS_TRAIN
 from loadData import train_iterator, valid_iterator, test_iterator
 from model.LSTM import LSTM
 import pandas as pd
@@ -15,9 +15,8 @@ max_acc = 0.0
 
 def binary_accuracy(preds, y):
     """
-    计算统计参数，正确率,精确率,召回率,f值
+    Calculating statistical parameters
     """
-    # round predictions to the closest integer
     rounded_preds = torch.round(torch.sigmoid(preds))
 
     true_positive = (rounded_preds * y).sum(dim=0)
@@ -120,8 +119,7 @@ def test(model, iterator):
 
 
 if __name__ == "__main__":
-    is_traning = False
-    if is_traning:
+    if IS_TRAIN:
         model = LSTM(INPUT_DIM, EMBEDDING_DIM, HIDDEN_DIM, OUTPUT_DIM, BATCH_SIZE)
     else:
         model = torch.load('./trainedModel/best_{}_model.pkl'.format(CURRENT_MODEL_NAME))
@@ -131,7 +129,7 @@ if __name__ == "__main__":
     device = torch.device('cuda')
     model = model.to(device)
     criterion = criterion.to(device)
-    if is_traning:
+    if IS_TRAIN:
         for i in range(5):
             train(model, train_iterator, optimizer, criterion)
     else:

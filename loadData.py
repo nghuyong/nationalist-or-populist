@@ -5,9 +5,6 @@ import torch
 
 from config import VOCABULARY_SIZE, BATCH_SIZE, CURRENT_MODEL_NAME
 
-"""
-导入数据
-"""
 TEXT = data.Field()
 WEIBO_ID = data.Field(sequential=False, use_vocab=False)
 LABEL = data.LabelField(tensor_type=torch.FloatTensor)
