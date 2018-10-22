@@ -112,7 +112,7 @@ Save the model parameters with the highest accuracy on the validation set and us
 
 ## Result
 
-- nationalism
+- Nationalism
 
 | DataSet | Accuracy | Precision| Recall| F-value|
 | :---: | :---: |:---:|:---:| :---:|
@@ -120,7 +120,7 @@ Save the model parameters with the highest accuracy on the validation set and us
 | Validation | 0.9242 |0.8592|0.9453|0.4467|
 
 
-- populism
+- Populism
 
 | DataSet | Accuracy | Precision| Recall| F-value|
 | :---: | :---: |:---:|:---:| :---:|
@@ -131,7 +131,7 @@ Save the model parameters with the highest accuracy on the validation set and us
 
 # Cite
 
-If this dataset and code is applied to your work, please quote the following article:
+If this dataset and code is applied to your work, please cite the following article:
 
 **《The Expression of Nationalist and Populist Emotions: A Study Based on the GMO Issues on Sina Weibo》**
 
