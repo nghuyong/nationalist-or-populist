@@ -133,5 +133,5 @@ Save the model parameters with the highest accuracy on the validation set and us
 
 If this dataset and code is applied to your work, please cite the following article:
 
-**《The Expression of Nationalist and Populist Emotions: A Study Based on the GMO Issues on Sina Weibo》**
+**《Identification of Nationalist and Populist Emotions in Social Media:Based a New Massive Text Annotation Approach for Deep Learning》**
 
