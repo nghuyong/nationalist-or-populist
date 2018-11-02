@@ -1,3 +1,5 @@
+**Dataset and code for the article "Identification of Nationalist and Populist Emotions in Social Media:Based a New Massive Text Annotation Approach for Deep Learning" (ICA 2019)**
+
 # Task description
 Train two classifiers to identify whether the sentence content contains nationalism or populism.
 
@@ -114,7 +116,7 @@ Save the model parameters with the highest accuracy on the validation set and us
 
 - Nationalism
 
-| DataSet | Accuracy | Precision| Recall| F-value|
+| DataSet | Accuracy | Precision| Recall| F0-value|
 | :---: | :---: |:---:|:---:| :---:|
 | Train | 0.9375 |0.9444|0.9444|0.4722|
 | Validation | 0.9242 |0.8592|0.9453|0.4467|
@@ -122,16 +124,7 @@ Save the model parameters with the highest accuracy on the validation set and us
 
 - Populism
 
-| DataSet | Accuracy | Precision| Recall| F-value|
+| DataSet | Accuracy | Precision| Recall| F0-value|
 | :---: | :---: |:---:|:---:| :---:|
 | Train | 0.9062 |0.9286|0.8667|0.4483|
 | Validation | 0.8521 |0.7579|0.7951|0.3808|
-
-
-
-# Cite
-
-If this dataset and code is applied to your work, please cite the following article:
-
-**《Identification of Nationalist and Populist Emotions in Social Media:Based a New Massive Text Annotation Approach for Deep Learning》**
-
