@@ -92,7 +92,7 @@ Test data of the two classifiers is the same.
 # Model
 Take nationalism as an example.
 
-![](./screenshot/model.png)
+<img src="./screenshot/model.png" width = "50%" height = "50%" alt="图片名称" align=center />
 
 1. Word segmentation of the input sentence
 2. Convert each word after the word segmentation into a word vector
